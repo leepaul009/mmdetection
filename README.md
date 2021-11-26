@@ -43,7 +43,6 @@ pip install -v -e .  # or "python setup.py develop"
 ### 3.1 Download pre-trained model:
 Download following pretrained model from https://github.com/open-mmlab/mmdetection:
 ```
-  cascade_mask_rcnn_hrnetv2p_w32_20e_coco_20200512_154043-39d9cf7b.pth
   cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
   cascade_rcnn_r50_fpn_20e_coco_bbox_mAP-0.41_20200504_175131-e9872a90.pth
   gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
