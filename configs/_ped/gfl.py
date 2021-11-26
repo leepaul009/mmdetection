@@ -66,8 +66,9 @@ optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 lr_config = dict(step=[16, 22])
 runner = dict(type='EpochBasedRunner', max_epochs=24)
 
-# load_from = 'gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth'
-resume_from = 'work_dirs/ped/gfl/init/latest.pth'
+# load from pretrained model
+load_from = 'gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth'
+# resume_from = 'work_dirs/ped/gfl/init/latest.pth'
 
 model = dict(
     backbone=dict(
