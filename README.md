@@ -61,8 +61,9 @@ Evaluation result will be automatically writen into folder 'eval'(create by trai
 Extract evaluation result into a csv format output file. 
 This output file could be used in multi-model-fusion step.
 ```
-python submit.py --input work_dirs/ped/hrnet_cascade_box/eval/ --output output.csv
+python submit.py --input work_dirs/ped/hrnet_cascade_box/eval/?.pth --output output.csv
 ```
+Note: evaluation data loader make sure all the images in the validation set are input to model, otherwise, the result is wrong.
 
 #### 3.2.2 Train gfl(resnet 101, best result at final epoch):
 ```
@@ -72,7 +73,7 @@ Evaluation result will be automatically writen into folder 'eval'(create by trai
 Extract evaluation result into a csv format output file. 
 This output file could be used in multi-model-fusion step.
 ```
-python submit.py --input work_dirs/ped/gfl/eval/ --output output.csv
+python submit.py --input work_dirs/ped/gfl/eval/?.pth --output output.csv
 ```
 
 #### 3.2.3 Train vfnet(resnet 101, best result at final epoch):
@@ -81,7 +82,7 @@ python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_pe
 ```
 Extract evaluation result into a csv format output file. 
 ```
-python submit.py --input work_dirs/ped/vfnet_r101/eval/ --output output.csv
+python submit.py --input work_dirs/ped/vfnet_r101/eval/?.pth --output output.csv
 ```
 
 ## Acknowledgement
