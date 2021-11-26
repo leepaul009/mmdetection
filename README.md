@@ -47,8 +47,8 @@ Download following pretrained model from https://github.com/open-mmlab/mmdetecti
   cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
 # for gfl:
   gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
-# for vfnet:
-  vfnet_x101_64x4d_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-b5f6da5e.pth
+# for vfnet r101:
+  https://download.openmmlab.com/mmdetection/v2.0/vfnet/vfnet_r101_fpn_mdconv_c3-c5_mstrain_2x_coco/vfnet_r101_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-7729adb5.pth
 ```
 And put the models in root folder of repository, and later config file will read those model.
 
