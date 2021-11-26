@@ -78,9 +78,12 @@ data = dict(
         img_prefix=data_root + 'images/test/',
         pipeline=test_pipeline))
 evaluation = dict(interval=1, metric=['bbox'])
-# load_from = 'cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth'
-load_from = 'work_dirs/ped/hrnet_cascade_box/cityscape/latest.pth'
-# resume_from = ''
+
+# pretrained model from mmdetectioin
+load_from = 'cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth'
+
+# if you need resume trainning, pls comment 'load_from' and use 'resume_from' 
+# resume_from = 'path_to_resume_model_file'
 
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
