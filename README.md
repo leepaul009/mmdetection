@@ -44,9 +44,9 @@ pip install -v -e .  # or "python setup.py develop"
 Download following pretrained model from https://github.com/open-mmlab/mmdetection:
 ```
 # for hrnet cascade(box):
-  cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
+  https://download.openmmlab.com/mmdetection/v2.0/hrnet/cascade_rcnn_hrnetv2p_w32_20e_coco/cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
 # for gfl:
-  gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
+  https://download.openmmlab.com/mmdetection/v2.0/gfl/gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco/gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
 # for vfnet r101:
   https://download.openmmlab.com/mmdetection/v2.0/vfnet/vfnet_r101_fpn_mdconv_c3-c5_mstrain_2x_coco/vfnet_r101_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-7729adb5.pth
 ```
