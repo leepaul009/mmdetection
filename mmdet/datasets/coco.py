@@ -15,6 +15,7 @@ from mmdet.core import eval_recalls
 from .api_wrappers import COCO, COCOeval
 from .builder import DATASETS
 from .custom import CustomDataset
+import torch, os
 
 
 @DATASETS.register_module()
@@ -51,11 +52,12 @@ class CocoDataset(CustomDataset):
         self.cat_ids = self.coco.get_cat_ids(cat_names=self.CLASSES)
 
         self.cat2label = {cat_id: i for i, cat_id in enumerate(self.cat_ids)}
+        # img id is same to data(json image id), coco use it to find img
         self.img_ids = self.coco.get_img_ids()
         data_infos = []
         total_ann_ids = []
         for i in self.img_ids:
-            info = self.coco.load_imgs([i])[0]
+            info = self.coco.load_imgs([i])[0] # coco load img list, thus use [0]
             info['filename'] = info['file_name']
             data_infos.append(info)
             ann_ids = self.coco.get_ann_ids(img_ids=[i])
@@ -135,7 +137,7 @@ class CocoDataset(CustomDataset):
         gt_bboxes_ignore = []
         gt_masks_ann = []
         for i, ann in enumerate(ann_info):
-            if ann.get('ignore', False):
+            if ann.get('ignore', False): # if ann['ignore'] == 1, continue
                 continue
             x1, y1, w, h = ann['bbox']
             inter_w = max(0, min(x1 + w, img_info['width']) - max(x1, 0))
@@ -151,7 +153,7 @@ class CocoDataset(CustomDataset):
                 gt_bboxes_ignore.append(bbox)
             else:
                 gt_bboxes.append(bbox)
-                gt_labels.append(self.cat2label[ann['category_id']])
+                gt_labels.append(self.cat2label[ann['category_id']]) # label start from 0
                 gt_masks_ann.append(ann.get('segmentation', None))
 
         if gt_bboxes:
@@ -364,10 +366,12 @@ class CocoDataset(CustomDataset):
                  metric='bbox',
                  logger=None,
                  jsonfile_prefix=None,
-                 classwise=False,
+                 classwise=True,
                  proposal_nums=(100, 300, 1000),
                  iou_thrs=None,
-                 metric_items=None):
+                 metric_items=None,
+                 out_dir=None,
+                 eval_epoch=0,):
         """Evaluation in COCO protocol.
 
         Args:
@@ -437,6 +441,14 @@ class CocoDataset(CustomDataset):
                 raise KeyError(f'{metric} is not in results')
             try:
                 predictions = mmcv.load(result_files[metric])
+                
+                if out_dir != None:
+                    if os.path.exists(out_dir):
+                        pred_path = os.path.join(out_dir, 'eval')
+                        os.makedirs(pred_path, exist_ok=True)
+                        pred_path = os.path.join(pred_path, "prediction_epoch_{}.pth".format(eval_epoch))
+                        torch.save(predictions, pred_path)
+
                 if iou_type == 'segm':
                     # Refer to https://github.com/cocodataset/cocoapi/blob/master/PythonAPI/pycocotools/coco.py#L331  # noqa
                     # When evaluating mask AP, if the results contain bbox,

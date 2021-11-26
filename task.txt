@@ -1,0 +1,117 @@
+python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/orig.py --launcher pytorch
+
+############################################
+############################################
+###################### normal cascade
+## train:
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade.py --launcher pytorch --work-dir ./work_dirs/ped/cascade/norm_r2 >> ped_cascade_norm_r2.log 2>&1 &
+
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade.py --launcher pytorch --work-dir ./work_dirs/ped/cascade/norm_origimg2 >> ped_cascade_norm_origimg2.log 2>&1 &
+
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade.py --launcher pytorch --work-dir ./work_dirs/ped/cascade/norm_origimg3 >> ped_cascade_norm_origimg3.log 2>&1 &
+
+    ## CUDA_VISIBLE_DEVICES=1,2,3
+
+## infer:
+    python tools/test.py configs/_ped/cascade.py ???.pth --eval "bbox" --work-dir work_dirs/ped/cascade/infer/??
+
+    ## on GPU cluster
+    CUDA_VISIBLE_DEVICES=0 python tools/test.py configs/_ped/orig.py ped_norm_epoch_2.pth --eval "bbox" --work-dir work_dirs/ped/norm/infer/epoch_2
+############################################
+############################################
+###################### hrnet cascade 
+## train:
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade/norm >> ped_hrnet_cascade_norm.log 2>&1 &
+
+    ## box
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box/norm >> ped_hrnet_cascade_box_norm.log 2>&1 &
+
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box/norm2 >> ped_hrnet_cascade_box_norm2.log 2>&1 &
+
+    ## cityscape
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cityscape.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box/cityscape >> ped_hrnet_cascade_box_cityscape.log 2>&1 &
+
+    ## retrain ped
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box/norm3 >> ped_hrnet_cascade_box_norm3.log 2>&1 &
+
+## infer:
+    ## on GPU cluster
+    CUDA_VISIBLE_DEVICES=2 python tools/test.py configs/_ped/cascade_hrnet.py weights/hrnet_cascade_norm_e18.pth --eval "bbox" --work-dir work_dirs/ped/hrnet_cascade/norm/infer/e18
+
+############################################
+############################################
+###################### cascade mask
+
+## pre-train 5cls:
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/mask.py --launcher pytorch --work-dir work_dirs/ped/mask/norm_ >> mask_norm.log 2>&1 &
+
+    work_dirs/ped/mask/norm_/epoch_12.pth
+
+## train 1cls
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/mask.py --launcher pytorch --work-dir work_dirs/ped/mask/norm_ped >> mask_norm_ped.log 2>&1 &
+
+    work_dirs/ped/mask/norm_ped/epoch_12.pth
+
+## infer:
+
+    CUDA_VISIBLE_DEVICES=0 python tools/test.py configs/_ped/mask.py work_dirs/ped/mask/norm_ped/epoch_10.pth --eval "bbox" --work-dir work_dirs/ped/mask/infer_norm_ped 
+    
+############################################
+############################################
+###################### gfl
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/gfl.py --launcher pytorch --work-dir work_dirs/ped/gfl/init >> ped_gfl_init.log 2>&1 &
+
+
+
+############################################
+############################################
+###################### vfnet
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/vfnet.py --launcher pytorch --work-dir work_dirs/ped/vfnet/init >> ped_vfnet_init.log 2>&1 &
+
+    nohup python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/vfnet_r101.py --launcher pytorch --work-dir work_dirs/ped/vfnet_r101/init >> ped_vfnet_r101_init.log 2>&1 &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################
+############################################
+### on GPU cluster
+    CUDA_VISIBLE_DEVICES=3 nohup python tools/train.py configs/_ped/mask.py --work-dir work_dirs/ped/mask/refine_01 >> ped_mask_refine_01.log 2>&1 &
+
+    CUDA_VISIBLE_DEVICES=1,2 python -m torch.distributed.launch --nproc_per_node=2 --master_port=29500  tools/train.py configs/_ped/mask.py --launcher pytorch --work-dir work_dirs/ped/mask/debug
+
+    CUDA_VISIBLE_DEVICES=1,2 nohup python -m torch.distributed.launch --nproc_per_node=2 tools/train.py configs/_ped/mask.py --launcher pytorch --work-dir work_dirs/ped/mask/refine_01 >> ped_mask_refine_01.log 2>&1 &
+
+
+
+############################################
+############################################
+###################### sign
+
+CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/_ped/sign.py --work-dir work_dirs/sign/norm2
+    CUDA_VISIBLE_DEVICES=0 nohup python tools/train.py configs/_ped/sign.py --work-dir work_dirs/sign/norm2 >> sign.log 2>&1 &
+
+CUDA_VISIBLE_DEVICES=0 python tools/test.py configs/_ped/sign.py work_dirs/sign/norm/epoch_20.pth --work-dir work_dirs/sign/infer/norm2 --eval "bbox"
+
+
+############################################
+############################################
+############################################
+############################################
+
+rsync --progress -avhe ssh configs/ lqurszh@abts55129.de.bosch.com:~/aiworkspace/ped/mmdetection-master/configs/
+
+rsync --progress -avhe ssh mmdet/ lqurszh@abts55129.de.bosch.com:~/aiworkspace/ped/mmdetection-master/mmdet/
+
+rsync --progress -avhe ssh /home/lqurszh/.cache/torch/hub/checkpoints/ lqurszh@abts55129.de.bosch.com:~/.cache/torch/hub/checkpoints/
+

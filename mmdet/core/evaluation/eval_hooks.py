@@ -21,6 +21,21 @@ class EvalHook(BaseEvalHook):
         if self.save_best:
             self._save_ckpt(runner, key_score)
 
+    def evaluate(self, runner, results):
+        #### if is CocoDataset
+        eval_res = self.dataloader.dataset.evaluate(
+            results, logger=runner.logger, out_dir=runner.work_dir, eval_epoch=runner.epoch, **self.eval_kwargs)
+        for name, val in eval_res.items():
+            runner.log_buffer.output[name] = val
+        runner.log_buffer.ready = True
+
+        if self.save_best is not None:
+            if self.key_indicator == 'auto':
+                # infer from eval_results
+                self._init_rule(self.rule, list(eval_res.keys())[0])
+            return eval_res[self.key_indicator]
+
+        return None
 
 class DistEvalHook(BaseDistEvalHook):
 
@@ -59,3 +74,19 @@ class DistEvalHook(BaseDistEvalHook):
 
             if self.save_best:
                 self._save_ckpt(runner, key_score)
+    
+    def evaluate(self, runner, results):
+        #### if is CocoDataset
+        eval_res = self.dataloader.dataset.evaluate(
+            results, logger=runner.logger, out_dir=runner.work_dir, eval_epoch=runner.epoch, **self.eval_kwargs)
+        for name, val in eval_res.items():
+            runner.log_buffer.output[name] = val
+        runner.log_buffer.ready = True
+
+        if self.save_best is not None:
+            if self.key_indicator == 'auto':
+                # infer from eval_results
+                self._init_rule(self.rule, list(eval_res.keys())[0])
+            return eval_res[self.key_indicator]
+
+        return None
