@@ -42,30 +42,41 @@ pip install -v -e .  # or "python setup.py develop"
 ## 3 Train and inference
 ### 3.1 Download pre-trained model:
 Download following pretrained model from https://github.com/open-mmlab/mmdetection:
+```
   cascade_mask_rcnn_hrnetv2p_w32_20e_coco_20200512_154043-39d9cf7b.pth
   cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
   cascade_rcnn_r50_fpn_20e_coco_bbox_mAP-0.41_20200504_175131-e9872a90.pth
   gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
   vfnet_x101_64x4d_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-b5f6da5e.pth
+```
 And put the models in root folder of repository, and later config file will read those model.
 
 ### 3.2 Train:
-
-train hrnet cascade:
+Different models are implemented within config files.
+#### 3.2.1 Train hrnet cascade (best result at epoch 10):
 ```
 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box
 ```
 
-train gfl:
+#### 3.2.2 Train gfl(resnet 101, best result at final epoch):
 ```
 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/gfl.py --launcher pytorch --work-dir work_dirs/ped/gfl
 ```
+Evaluation result will be automatically writen into folder 'eval'(create by trainning code).
+Extract evaluation result into a csv format output file. 
+This output file could be used in multi-model-fusion step.
+```
+python submit.py --input work_dirs/ped/gfl/eval/ --output output.csv
+```
 
-train vfnet:
+#### 3.2.3 Train vfnet(resnet 101, best result at final epoch):
 ```
 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/vfnet_r101.py --launcher pytorch --work-dir work_dirs/ped/vfnet_r101
 ```
-
+Extract evaluation result into a csv format output file. 
+```
+python submit.py --input work_dirs/ped/vfnet_r101/eval/ --output output.csv
+```
 
 ## Acknowledgement
 * [detectron2](https://github.com/facebookresearch/detectron2)
