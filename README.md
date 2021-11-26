@@ -57,6 +57,12 @@ Different models are implemented within config files.
 ```
 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box
 ```
+Evaluation result will be automatically writen into folder 'eval'(create by trainning code).
+Extract evaluation result into a csv format output file. 
+This output file could be used in multi-model-fusion step.
+```
+python submit.py --input work_dirs/ped/hrnet_cascade_box/eval/ --output output.csv
+```
 
 #### 3.2.2 Train gfl(resnet 101, best result at final epoch):
 ```
