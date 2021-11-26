@@ -63,7 +63,7 @@ data = dict(
 evaluation = dict(interval=1, metric='bbox')
 
 # load from pretrained model:
-# load_from = ''
+load_from = 'vfnet_r101_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-7729adb5.pth'
 
 # optimizer
 optimizer = dict(lr=0.01, paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
