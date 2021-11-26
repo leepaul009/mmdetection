@@ -43,16 +43,18 @@ pip install -v -e .  # or "python setup.py develop"
 ### 3.1 Download pre-trained model:
 Download following pretrained model from https://github.com/open-mmlab/mmdetection:
 ```
+# for hrnet cascade(box):
   cascade_rcnn_hrnetv2p_w32_20e_coco_20200208-928455a4.pth
-  cascade_rcnn_r50_fpn_20e_coco_bbox_mAP-0.41_20200504_175131-e9872a90.pth
+# for gfl:
   gfl_r101_fpn_dconv_c3-c5_mstrain_2x_coco_20200630_102002-134b07df.pth
+# for vfnet:
   vfnet_x101_64x4d_fpn_mdconv_c3-c5_mstrain_2x_coco_20201027pth-b5f6da5e.pth
 ```
 And put the models in root folder of repository, and later config file will read those model.
 
 ### 3.2 Train:
 Different models are implemented within config files.
-#### 3.2.1 Train hrnet cascade (best result at epoch 10):
+#### 3.2.1 Train hrnet cascade(box) (best result at epoch 10):
 ```
 python -m torch.distributed.launch --nproc_per_node=4 tools/train.py configs/_ped/cascade_hrnet_box.py --launcher pytorch --work-dir ./work_dirs/ped/hrnet_cascade_box
 ```
